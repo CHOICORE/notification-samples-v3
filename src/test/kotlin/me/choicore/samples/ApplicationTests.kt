@@ -1,4 +1,4 @@
-package me.choicore.samples.notification
+package me.choicore.samples
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

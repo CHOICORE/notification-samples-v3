@@ -1,4 +1,4 @@
-package me.choicore.samples.notification
+package me.choicore.samples
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
