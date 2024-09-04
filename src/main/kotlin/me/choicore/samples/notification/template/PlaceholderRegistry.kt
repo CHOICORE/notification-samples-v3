@@ -26,4 +26,8 @@ class PlaceholderRegistry {
         if (placeholders.isEmpty()) throw IllegalArgumentException("Placeholders must not be empty")
         addPlaceholders(placeholders.toList())
     }
+
+    fun contains(target: String): Boolean = placeholders.containsKey(target)
+
+    fun contains(placeholder: Placeholder): Boolean = placeholders.containsValue(placeholder)
 }

@@ -8,28 +8,35 @@ data class Placeholder(
     val replacement: String,
 ) {
     init {
-        validate(target)
+        validateTarget()
+        validateReplacement()
+    }
+
+    private fun validateTarget() {
+        log.debug("Validating placeholder target: {}", target)
+        require(target.isNotBlank()) { "target must not be blank" }
+        validatePlaceholderFormat()
+        log.debug("Validation passed for target: {}", target)
+    }
+
+    private fun validateReplacement() {
         require(replacement.isNotBlank()) { "replacement must not be blank" }
     }
 
-    private fun validate(target: String) {
-        log.trace("placeholder target: $target")
-        require(target.isNotBlank()) { "target must not be blank" }
-
-        val matched: Boolean =
-            WELL_KNOWN_PLACEHOLDER_BRACKETS.any { (s: String, e: String) ->
-                target.startsWith(s) && target.endsWith(e)
-            }
-        require(matched) {
-            "Target must be enclosed in known brackets. Supported brackets: ${
-                WELL_KNOWN_PLACEHOLDER_BRACKETS.entries.map {
-                    "${it.key}placeholder${it.value}"
-                }
-            }"
+    private fun validatePlaceholderFormat() {
+        require(
+            WELL_KNOWN_PLACEHOLDER_BRACKETS.any { (start, end) ->
+                target.startsWith(start) &&
+                    target.endsWith(end) &&
+                    !target.substringAfter(start).substringBeforeLast(end).any { it in charArrayOf('{', '}') }
+            },
+        ) {
+            "Target must be enclosed in known brackets. Supported brackets: ${getSupportedFormats()}"
         }
     }
 
     companion object {
+        private val log: Logger = LoggerFactory.getLogger(Placeholder::class.java)
         val WELL_KNOWN_PLACEHOLDER_BRACKETS =
             mapOf(
                 "#{" to "}",
@@ -37,6 +44,9 @@ data class Placeholder(
                 "{" to "}",
             )
 
-        private val log: Logger = LoggerFactory.getLogger(Placeholder::class.java)
+        fun getSupportedFormats(): String =
+            WELL_KNOWN_PLACEHOLDER_BRACKETS.entries.joinToString(", ") { (startsWith: String, endsWith: String) ->
+                "${startsWith}placeholder$endsWith"
+            }
     }
 }

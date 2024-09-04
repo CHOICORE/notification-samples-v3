@@ -5,25 +5,22 @@ import org.slf4j.LoggerFactory
 
 class PlaceholderBinder {
     fun bind(
-        component: Component,
+        message: Message,
         placeholderRegistry: PlaceholderRegistry,
     ) {
-        log.debug("Binding placeholders for component of type: {}", component::class.simpleName)
-        when (component) {
-            is Component.Template -> {
-                log.trace("inspection of placeholders in text: '{}'", component.value)
-
-                val placeholders: List<Placeholder> = inspect(component.value, placeholderRegistry)
-
-                if (placeholders.isNotEmpty()) {
-                    component.setPlaceholders(placeholders)
-                    log.debug("Placeholders bound successfully")
-                } else {
-                    log.info("No placeholders found to bind")
-                }
+        when (message) {
+            is Message.Template -> {
+                log.trace("Binding placeholders for template: '{}'", message.label)
+                message.setPlaceholders(placeholders = placeholderRegistry.getPlaceholders())
+                log.info("Placeholders bound successfully for template with label: '{}'", message.label)
             }
 
-            else -> log.info("Component is not a template, skipping binding. Component type: {}", component::class.simpleName)
+            else ->
+                log.info(
+                    "Skipping binding: message is not a template. label: '{}', type: '{}'",
+                    message.label,
+                    message::class.simpleName,
+                )
         }
     }
 
