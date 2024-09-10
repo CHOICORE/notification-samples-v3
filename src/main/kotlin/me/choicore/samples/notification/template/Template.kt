@@ -39,7 +39,12 @@ data class Template(
             log.warn("Template '{}' (key: '{}') contains no component to bind.", name, key)
         } else {
             all.forEachIndexed { index, component ->
-                log.debug("Binding placeholders for component {} of template '{}': {}", index + 1, name, component::class.simpleName)
+                log.debug(
+                    "Binding placeholders for component {} of template '{}': {}",
+                    index + 1,
+                    name,
+                    component::class.simpleName,
+                )
                 placeholderBinder.bind(component, registry)
             }
         }
