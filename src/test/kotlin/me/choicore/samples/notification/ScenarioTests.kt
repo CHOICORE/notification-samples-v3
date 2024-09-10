@@ -58,7 +58,7 @@ class ScenarioTests {
                         key = "key",
                         label = Message.Label.BUTTON,
                         value = "더 알아보기",
+                    ),
                 ),
-            ),
         )
 }
